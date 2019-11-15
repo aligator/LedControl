@@ -8,15 +8,16 @@ uint16_t remap(uint16_t x, uint16_t y) {
 
 LedStrip::LedStrip() : matrix(NeoPixelBrightnessBusGfx<NeoGrbFeature, NeoEsp8266DmaWs2812xMethod>(MATRIX_WIDTH, MATRIX_HEIGHT, LED_STRIP_PIN))
 {
-  this->text = String("Servus");
 }
 
 LedStrip::~LedStrip()
 {
 }
 
-void LedStrip::setText(String text) {
-  this->text = text;
+void LedStrip::loadModule(Module* module) {
+  this->activeModule = module;
+
+  activeModule->setup();
 }
 
 void LedStrip::setup(int fps)
@@ -26,8 +27,6 @@ void LedStrip::setup(int fps)
 
   // pass the remap function
   matrix.setRemapFunction(&remap);
-
-  matrix.setTextWrap(false);
   matrix.SetBrightness(40);
 }
 
@@ -58,21 +57,9 @@ void LedStrip::setBrightness(uint8_t brightness)
   matrix.SetBrightness(brightness);
 }
 
-void LedStrip::showText()
+void LedStrip::loop()
 {
-  if (this->_shouldDo()) {
-    const uint16_t colors[] = {
-      matrix.Color(255, 0, 0), matrix.Color(0, 255, 0), matrix.Color(0, 0, 255) };
-
-    matrix.fillScreen(0);
-    matrix.setCursor(x, 0);
-    matrix.print(this->text);
-    if(--x < -(int)(6*this->text.length())) {
-      x = matrix.width();
-      if(++pass >= 3) pass = 0;
-      matrix.setTextColor(colors[pass]);
-    }
-
-    matrix.Show();
+  if (_shouldDo()) {
+    activeModule->loop();
   }
 }

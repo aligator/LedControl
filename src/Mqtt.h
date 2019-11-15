@@ -5,6 +5,7 @@
 #include "Web.h"
 #include "LedStrip.h"
 #include "Config.h"
+#include "Modules/TextModule.h"
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
@@ -16,8 +17,6 @@ public:
 	void setup();
     void loop();
 
-    
-
 private:
     LedStrip* led;
     const char* broker = (char*) MQTT_BROKER;
@@ -25,6 +24,8 @@ private:
 
     WiFiClient espClient;
     PubSubClient client;
+
+    TextModule textModule;
 
     void _receiveCallback(char* topic, byte* payload, unsigned int length);
     void _reconnect();

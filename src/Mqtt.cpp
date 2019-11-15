@@ -19,9 +19,7 @@ boolean Mqtt::_isValidNumber(String str){
 }
 
 /**
- * allocates space for a c_str, adds the 0-termiator and copies the data to the new buffer
- * 
- * DO NOT FORGET TO FREE THE POINTER AFTER USE 
+ * converts bytes to a String
  */
 String Mqtt::_byte2str(byte* data, unsigned int length) {
     char* buffer = (char*) malloc (length+1);
@@ -39,7 +37,8 @@ void Mqtt::_receiveCallback(char* topic, byte* payload, unsigned int length) {
     String message = Mqtt::_byte2str(payload, length);
     
     if (strcmp(topic, TOPIC_SET_TEXT) == 0) {
-        led->setText(message);
+        textModule.setText(message);
+        led->loadModule(&textModule);
     } else if (strcmp(topic, TOPIC_SET_BRIGHTNESS) == 0) {
         if (Mqtt::_isValidNumber(message)) {
             int brightness = message.toInt();
@@ -50,7 +49,7 @@ void Mqtt::_receiveCallback(char* topic, byte* payload, unsigned int length) {
     }
 }
 
-Mqtt::Mqtt(LedStrip* led) {
+Mqtt::Mqtt(LedStrip* led): textModule(TextModule(led)) {
     this->led = led;
 }
 
@@ -61,6 +60,7 @@ void Mqtt::setup() {
     delay(10);
     this->client = PubSubClient(broker, port, espClient);
     this->client.setCallback(std::bind(&Mqtt::_receiveCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    this->led->loadModule(&textModule);
 }
 
 void Mqtt::_reconnect() {

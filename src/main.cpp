@@ -20,8 +20,7 @@ void setup() {
   Serial.begin(9600);
   web->setup();
   mqtt->setup();
-  
-  ledStrip->setup(20);
+  ledStrip->setup(30);
 
   ledStrip->setBrightness(60);
 }
@@ -29,6 +28,5 @@ void setup() {
 void loop() {
   web->loop();
   mqtt->loop();
-
-  ledStrip->showText();
+  ledStrip->loop();
 }
