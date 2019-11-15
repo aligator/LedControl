@@ -24,11 +24,12 @@ public:
     void setLed(uint16_t num, RgbColor color);
     void setLed(uint16_t x, uint16_t y, RgbColor color);
     void setBrightness(uint8_t brightness);
+    void setFps(int fps);
     void loadModule(Module* module);
 
 private:
     unsigned long previousMillis = 0;
-    long fps = -1;
+    int fps = -1;
 
     Module* activeModule;
     

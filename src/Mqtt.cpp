@@ -5,6 +5,7 @@
 #define TOPIC_ALL TOPIC "/#"
 #define TOPIC_SET_TEXT TOPIC "/set/text"
 #define TOPIC_SET_BRIGHTNESS TOPIC "/set/brightness"
+#define TOPIC_SET_FPS TOPIC "/set/fps"
 
 boolean Mqtt::_isValidNumber(String str){
     boolean isNum=false;
@@ -38,12 +39,19 @@ void Mqtt::_receiveCallback(char* topic, byte* payload, unsigned int length) {
     
     if (strcmp(topic, TOPIC_SET_TEXT) == 0) {
         textModule.setText(message);
-        led->loadModule(&textModule);
+        //led->loadModule(&textModule);
     } else if (strcmp(topic, TOPIC_SET_BRIGHTNESS) == 0) {
         if (Mqtt::_isValidNumber(message)) {
             int brightness = message.toInt();
             if (brightness >= 0 && brightness <= 255) {
                 led->setBrightness(brightness);
+            }
+        }
+    } else if (strcmp(topic, TOPIC_SET_FPS) == 0) {
+        if (Mqtt::_isValidNumber(message)) {
+            int fps = message.toInt();
+            if (fps >= -1 && fps <= 500) {
+                led->setFps(fps);
             }
         }
     }
@@ -77,10 +85,7 @@ void Mqtt::_reconnect() {
         } else {
             Serial.println("Connected");
             delay(100);
-            client.publish("hey", "Hello");
             client.subscribe(TOPIC_ALL);
-            //client.flush();
-            //client.loop();
         }
     }
 }

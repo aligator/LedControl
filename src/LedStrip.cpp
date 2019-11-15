@@ -33,7 +33,7 @@ void LedStrip::setup(int fps)
 boolean LedStrip::_shouldDo()
 {
   unsigned long currentMillis = millis();
-  if (matrix.CanShow() && (fps <= -1 || currentMillis - previousMillis >= 1000 / fps))
+  if (fps != 0 && matrix.CanShow() && (fps <= -1 || currentMillis - previousMillis >= 1000 / (unsigned int)fps))
   {
     previousMillis = currentMillis;
     return true;
@@ -55,6 +55,10 @@ void LedStrip::setLed(uint16_t x, uint16_t y, RgbColor color)
 void LedStrip::setBrightness(uint8_t brightness)
 {
   matrix.SetBrightness(brightness);
+}
+
+void LedStrip::setFps(int fps) {
+  this->fps = fps;
 }
 
 void LedStrip::loop()
