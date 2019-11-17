@@ -21,6 +21,8 @@ private:
     LedStrip* led;
     const char* broker = (char*) MQTT_BROKER;
     const uint port = MQTT_PORT;
+    const char* user = (char*) MQTT_USER;
+    const char* password = (char*) MQTT_PASSWD;
 
     WiFiClient espClient;
     PubSubClient client;

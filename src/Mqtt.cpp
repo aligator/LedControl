@@ -1,11 +1,13 @@
 #include "Mqtt.h"
 #include <functional>
+#include <ArduinoJson.h>
 
 #define TOPIC "/led"
 #define TOPIC_ALL TOPIC "/#"
 #define TOPIC_SET_TEXT TOPIC "/set/text"
 #define TOPIC_SET_BRIGHTNESS TOPIC "/set/brightness"
 #define TOPIC_SET_FPS TOPIC "/set/fps"
+#define TOPIC_SET_TEXT_COLOR TOPIC "/set/text/color"
 
 boolean Mqtt::_isValidNumber(String str){
     boolean isNum=false;
@@ -54,6 +56,26 @@ void Mqtt::_receiveCallback(char* topic, byte* payload, unsigned int length) {
                 led->setFps(fps);
             }
         }
+    } else if (strcmp(topic, TOPIC_SET_TEXT_COLOR) == 0) {
+        // e.g. "[[255,0,0],[0,0,255]]"
+
+        // for 9*JSON_ARRAY_SIZE(3) + JSON_ARRAY_SIZE(9);
+        StaticJsonDocument<560> doc = StaticJsonDocument<560>();
+        deserializeJson(doc, message);
+
+        std::vector<uint16_t> colors = std::vector<uint16_t>();
+
+        JsonArray colorArray=doc.as<JsonArray>();
+
+        for (JsonArray color : colorArray) {
+            int r = color[0];
+            int g = color[1];
+            int b = color[2];
+            
+            colors.push_back(led->matrix.Color(r, g, b));
+        }
+
+        textModule.setColors(colors);
     }
 }
 
@@ -79,7 +101,7 @@ void Mqtt::_reconnect() {
         clientId += String(random(0xffff), HEX);
 
         // Attempt to connect
-        if (!client.connect(clientId.c_str())) {
+        if (!client.connect(clientId.c_str(), user, password)) {
             Serial.print("failed, rc=");
             Serial.println(client.state());
         } else {

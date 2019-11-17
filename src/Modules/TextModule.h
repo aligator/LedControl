@@ -4,7 +4,7 @@
 #include "Arduino.h"
 #include "LedStrip.h"
 #include "LedModule.h"
-#include <list>
+#include <vector>
 
 class TextModule: public LedModule {
 public:
@@ -12,13 +12,9 @@ public:
     virtual ~TextModule();
 
     void setText(String text);
+    void setColors(std::vector<uint16_t> colors);
 private:
-    uint16_t colors[3] = {
-        led->matrix.Color(255, 0, 0),
-        led->matrix.Color(0, 255, 0),
-        led->matrix.Color(0, 0, 255)
-    };
-
+    uint16_t* colors;
     uint8_t colorNum;
 
     String text;
