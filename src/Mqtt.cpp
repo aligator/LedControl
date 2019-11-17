@@ -48,7 +48,7 @@ void Mqtt::_receiveCallback(char* topic, byte* payload, unsigned int length) {
             if (brightness >= 0 && brightness <= 255) {
                 led->setBrightness(brightness);
             } else {
-                Serial.println("the brightness has to be a integer from 0 to 255");
+                Serial.println("the brightness has to be an integer from 0 to 255");
             }
         }
     } else if (strcmp(topic, TOPIC_SET_FPS) == 0) {
@@ -58,11 +58,25 @@ void Mqtt::_receiveCallback(char* topic, byte* payload, unsigned int length) {
             if (fps >= -1 && fps <= 500) {
                 led->setFps(fps);
             } else {
-                Serial.println("the fps has to be a integer from -1 to 500");
+                Serial.println("the fps has to be an integer from -1 to 500");
             }
         }
     } else if (strcmp(topic, TOPIC_SET_TEXT_COLOR) == 0) {
-        // e.g. "[[255,0,0],[0,0,255]]"
+        // e.g. only on color using th numeric value or "[[255,0,0],[0,0,255]]"
+
+        if (Mqtt::_isValidNumber(message)) {
+            int color = message.toInt();
+            if (color >= 0 && color <= 0x0FFFFFF) {
+                color = led->matrix.Color((color & 0xFF0000) >> 16,
+                                            (color & 0x00FF00) >> 8,
+                                            color & 0x0000FF);
+                                            
+                textModule.setColors(std::vector<uint16_t>{(uint16_t)color});
+            } else {
+                Serial.println("The color has to be an integer from 0 to 16777215");
+            }
+            return;
+        }
 
         // for 9*JSON_ARRAY_SIZE(3) + JSON_ARRAY_SIZE(9);
         StaticJsonDocument<560> doc = StaticJsonDocument<560>();
@@ -100,7 +114,7 @@ void Mqtt::_receiveCallback(char* topic, byte* payload, unsigned int length) {
 
             textModule.setColors(colors);
         } else {
-            Serial.println("you have to pass an array");
+            Serial.println("you have to pass an array of color-arrays or one color as integer");
         }
     }
 }
