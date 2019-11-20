@@ -33,7 +33,6 @@ private:
     void _reconnect();
     
     static String _byte2str(byte* data, unsigned int length);
-    static boolean _isValidNumber(String str);
 };
 
 #endif /* MQTT_H_ */
