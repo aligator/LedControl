@@ -49,7 +49,7 @@ bool TextModule::doProcessMqtt(String topic, String message) {
                                             (color & 0x00FF00) >> 8,
                                             color & 0x0000FF);
 
-                this->setColors(std::vector<uint16_t>{(uint16_t)color});
+                this->addColor((uint16_t)color);
             } else {
                 Serial.println("The color has to be an integer from 0 to 16777215");
             }
