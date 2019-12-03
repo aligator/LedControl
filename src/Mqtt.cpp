@@ -49,29 +49,49 @@ void Mqtt::_receiveCallback(char* topic, byte* payload, unsigned int length) {
             }
         }
         return;
-    }
+    } else {
+        // then check modules
 
-    // then check modules
-    int baseTopicLength = strlen(TOPIC) + strlen(textModule.getModuleTopic());
-    if(topicString.startsWith(String(TOPIC) + String(textModule.getModuleTopic()))) {
-        if (textModule.processMqtt(topicString.substring(baseTopicLength), message)) {
-            return;
+        for (int i=0; i<this->modules.size(); i++) {
+            int baseTopicLength = strlen(TOPIC) + strlen(this->modules[i]->getModuleTopic());
+            if(topicString.startsWith(String(TOPIC) + String(this->modules[i]->getModuleTopic()))) {
+                // enable module as soon as the topic starts with the module topic
+                this->led->loadModule(this->modules[i]);
+                if (this->modules[i]->processMqtt(topicString.substring(baseTopicLength), message)) {
+                    return;
+                }
+
+                break;
+            }
         }
     }
+
+    
 }
 
-Mqtt::Mqtt(LedStrip* led): textModule(TextModule(led)) {
+Mqtt::Mqtt(LedStrip* led) {
     this->led = led;
+    this->modules = std::vector<Module*>{
+        new TextModule(led),
+        new FullBlinkModule(led)
+    };
 }
 
 Mqtt::~Mqtt() {
+    for (int i=0; i<this->modules.size(); i++) {
+        this->led->loadModule(0);
+        delete this->modules[i];
+        this->modules.pop_back();
+    }
 }
 
 void Mqtt::setup() {
     delay(10);
     this->client = PubSubClient(broker, port, espClient);
     this->client.setCallback(std::bind(&Mqtt::_receiveCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    this->led->loadModule(&textModule);
+    if (this->modules.size() > 0){
+        this->led->loadModule(this->modules[0]);
+    }
 }
 
 void Mqtt::_reconnect() {

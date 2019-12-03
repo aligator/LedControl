@@ -6,8 +6,11 @@
 #include "LedStrip.h"
 #include "Config.h"
 #include "Modules/TextModule.h"
+#include "Modules/FullBlinkModule.h"
+#include "Module.h"
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include <vector>
 
 class Mqtt {
 public:
@@ -27,7 +30,7 @@ private:
     WiFiClient espClient;
     PubSubClient client;
 
-    TextModule textModule;
+    std::vector<Module*> modules;
 
     void _receiveCallback(char* topic, byte* payload, unsigned int length);
     void _reconnect();
