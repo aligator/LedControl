@@ -8,6 +8,11 @@ uint16_t remap(uint16_t x, uint16_t y) {
 
 LedStrip::LedStrip() : matrix(NeoPixelBrightnessBusGfx<NeoGrbFeature, NeoEsp8266DmaWs2812xMethod>(MATRIX_WIDTH, MATRIX_HEIGHT, LED_STRIP_PIN))
 {
+  this->setColors(std::vector<uint16_t>{
+    this->matrix.Color(255, 0, 0),
+    this->matrix.Color(0, 255, 0),
+    this->matrix.Color(0, 0, 255)
+  });
 }
 
 LedStrip::~LedStrip()
@@ -28,6 +33,33 @@ void LedStrip::setup(int fps)
   // pass the remap function
   matrix.setRemapFunction(&remap);
   matrix.SetBrightness(40);
+}
+
+void LedStrip::addColor(uint16_t color) {
+    this->colors.push_back(color);
+}
+
+void LedStrip::setColors(std::vector<uint16_t> newColors) {
+    this->colors = newColors;
+}
+
+uint16_t LedStrip::getNextColor() {
+  if (this->colors.size() > 0) {
+    if (++currentColorNum >= this->colors.size()) {
+      currentColorNum = 0;
+    }
+    return colors[currentColorNum];
+  } else {
+    return 0;
+  }
+}
+
+uint16_t LedStrip::getCurrentColor() {
+  if (this->colors.size() > 0) {
+    return colors[currentColorNum];
+  } else {
+    return 0;
+  }
 }
 
 boolean LedStrip::_shouldDo()

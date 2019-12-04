@@ -27,7 +27,14 @@ public:
     void setFps(int fps);
     void loadModule(Module* module);
 
+    void addColor(uint16_t color);
+    void setColors(std::vector<uint16_t> colors);
+    uint16_t getNextColor();
+    uint16_t getCurrentColor();
 private:
+    std::vector<uint16_t> colors;
+    uint8_t currentColorNum = 0;
+
     unsigned long previousMillis = 0;
     int fps = -1;
 
