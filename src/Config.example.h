@@ -8,6 +8,8 @@
 
 #define MQTT_BROKER "192.168.178.53"
 #define MQTT_PORT 1883
+#define MQTT_USER "...."
+#define MQTT_PASSWD "...."
 
 #define WIFI_SSID "...."
 #define WIFI_PASSWD "...."

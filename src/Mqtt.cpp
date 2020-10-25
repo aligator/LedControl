@@ -176,6 +176,7 @@ Mqtt::Mqtt(LedStrip* led) {
         new TextModule(led),
         new FullBlinkModule(led)
     };
+    this->client = PubSubClient(this->espClient);
 }
 
 Mqtt::~Mqtt() {
@@ -188,7 +189,7 @@ Mqtt::~Mqtt() {
 
 void Mqtt::setup() {
     delay(10);
-    this->client = PubSubClient(broker, port, espClient);
+    this->client.setServer(broker, port);
     this->client.setCallback(std::bind(&Mqtt::_receiveCallback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     if (this->modules.size() > 0){
         this->led->loadModule(this->modules[0]);
