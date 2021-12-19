@@ -7,9 +7,7 @@ TextModule::TextModule(LedStrip* led)
     this->setText(std::vector<String>{"Servus"});
 }
 
-TextModule::~TextModule()
-{
-}
+TextModule::~TextModule() {}
 
 void TextModule::addText(String text) {
     this->texts.push_back(text);

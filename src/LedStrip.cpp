@@ -32,7 +32,7 @@ void LedStrip::setup(int fps)
 
   // pass the remap function
   matrix.setRemapFunction(&remap);
-  matrix.SetBrightness(40);
+  this->setBrightness(255);
 }
 
 void LedStrip::addColor(uint16_t color) {
@@ -86,7 +86,8 @@ void LedStrip::setLed(uint16_t x, uint16_t y, RgbColor color)
 
 void LedStrip::setBrightness(uint8_t brightness)
 {
-  matrix.SetBrightness(brightness);
+  uint8_t scaledBrightness = brightness / 255 * MATRIX_MAX_BRIGHTNESS;
+  matrix.SetBrightness(scaledBrightness);
 }
 
 void LedStrip::setFps(int fps) {

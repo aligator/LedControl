@@ -10,6 +10,8 @@
  */
 class Module {
 public:
+    virtual ~Module();
+
     bool processMqtt(String topic, String message);
     const char* getModuleTopic();
     void loop();

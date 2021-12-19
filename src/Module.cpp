@@ -1,6 +1,10 @@
 #include "Module.h"
 #include <Arduino.h>
 
+Module::~Module()
+{
+}
+
 bool Module::processMqtt(String topic, String message) {
   return this->doProcessMqtt(topic, message);
 }

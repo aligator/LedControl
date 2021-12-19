@@ -11,9 +11,7 @@ FullBlinkModule::FullBlinkModule(LedStrip* led)
     });
 }
 
-FullBlinkModule::~FullBlinkModule()
-{
-}
+FullBlinkModule::~FullBlinkModule() {}
 
 bool FullBlinkModule::doProcessMqtt(String topic, String message) {
     return false;

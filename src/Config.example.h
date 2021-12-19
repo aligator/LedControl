@@ -6,6 +6,9 @@
 #define MATRIX_WIDTH 32
 #define MATRIX_HEIGHT 8
 
+// 0-255
+#define MATRIX_MAX_BRIGHTNESS 100
+
 #define MQTT_BROKER "192.168.178.53"
 #define MQTT_PORT 1883
 #define MQTT_USER "...."
