@@ -88,9 +88,6 @@ void LedStrip::setLed(uint16_t x, uint16_t y, RgbColor color)
 void LedStrip::setBrightness(uint8_t brightness)
 {
   uint8_t scaledBrightness = static_cast<uint8_t>(static_cast<float>(brightness) / 255 * MATRIX_MAX_BRIGHTNESS);
-  Serial.println(scaledBrightness);
-  Serial.println(brightness / 255);
-
   matrix.SetBrightness(scaledBrightness);
 }
 
