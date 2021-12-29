@@ -14,6 +14,8 @@
 #define MQTT_USER "...."
 #define MQTT_PASSWD "...."
 
+#define MQTT_TOPIC "/led"
+
 #define WIFI_SSID "...."
 #define WIFI_PASSWD "...."
 #define WIFI_HOSTNAME "arduino-pixel"

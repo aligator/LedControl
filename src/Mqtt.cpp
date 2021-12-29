@@ -2,13 +2,13 @@
 #include "Util.h"
 #include <functional>
 #include <ArduinoJson.h>
+#include <ArduinoJson.h>
 
-#define TOPIC "/led"
-#define TOPIC_ALL TOPIC "/#"
-#define TOPIC_SET_BRIGHTNESS TOPIC "/set/brightness"
-#define TOPIC_SET_FPS TOPIC "/set/fps"
-#define TOPIC_SET_COLOR TOPIC "/set/color"
-#define TOPIC_ADD_COLOR TOPIC "/add/color"
+#define TOPIC_ALL MQTT_TOPIC "/#"
+#define TOPIC_SET_BRIGHTNESS MQTT_TOPIC "/set/brightness"
+#define TOPIC_SET_FPS MQTT_TOPIC "/set/fps"
+#define TOPIC_SET_COLOR MQTT_TOPIC "/set/color"
+#define TOPIC_ADD_COLOR MQTT_TOPIC "/add/color"
 
 /**
  * converts bytes to a String
@@ -156,8 +156,8 @@ void Mqtt::_receiveCallback(char* topic, byte* payload, unsigned int length) {
     } else {
         // then check modules
         for (uint i=0; i<this->modules.size(); i++) {
-            int baseTopicLength = strlen(TOPIC) + strlen(this->modules[i]->getModuleTopic());
-            if(topicString.startsWith(String(TOPIC) + String(this->modules[i]->getModuleTopic()))) {
+            int baseTopicLength = strlen(MQTT_TOPIC) + strlen(this->modules[i]->getModuleTopic());
+            if(topicString.startsWith(String(MQTT_TOPIC) + String(this->modules[i]->getModuleTopic()))) {
                 // enable module as soon as the topic starts with the module topic
                 this->led->loadModule(this->modules[i]);
                 if (this->modules[i]->processMqtt(topicString.substring(baseTopicLength), message)) {
