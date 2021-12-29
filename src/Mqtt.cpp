@@ -180,7 +180,7 @@ Mqtt::Mqtt(LedStrip* led) {
 }
 
 Mqtt::~Mqtt() {
-    for (int i=0; i<this->modules.size(); i++) {
+    for (int i=0; (short)i < (short)this->modules.size(); i++) {
         this->led->loadModule(0);
         delete this->modules[i];
         this->modules.pop_back();
