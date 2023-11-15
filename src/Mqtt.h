@@ -11,6 +11,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <vector>
+#include <ArduinoJson.h>
 
 class Mqtt {
 public:
@@ -26,6 +27,7 @@ private:
     const uint port = MQTT_PORT;
     const char* user = (char*) MQTT_USER;
     const char* password = (char*) MQTT_PASSWD;
+    const char* clientId = (char*) WIFI_HOSTNAME;
 
     WiFiClient espClient;
     PubSubClient client;
@@ -34,6 +36,7 @@ private:
 
     void _receiveCallback(char* topic, byte* payload, unsigned int length);
     void _reconnect();
+    void sendHADiscoveryMsg(DynamicJsonDocument doc, const char * type, const char * sensor);
     
     static String _byte2str(byte* data, unsigned int length);
 };

@@ -6,6 +6,6 @@
 class Util {
 public:
     static boolean isValidNumber(String str);
-    static uint16_t convert48BitTo16BitColor(int color);
+    static String split(String s, char parser, int index);
 };
 #endif /* UTIL_H_ */
