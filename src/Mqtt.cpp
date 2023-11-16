@@ -46,6 +46,7 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
             if (brightness >= 0 && brightness <= 255)
             {
                 led->setBrightness(brightness);
+                this->client.publish(TOPIC_GET_BRIGHTNESS, message.c_str());
             }
             else
             {
@@ -200,7 +201,8 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
         }
         else
         {
-            this->client.publish("debug/println", "set color");
+            // "rrr,ggg,bbb"
+            // e.g. 0,100,255
 
             // TODO: There is a bug in the util split, as it cannot read the 'last' part
             message.concat(",0");
@@ -225,6 +227,16 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
             {
                 Serial.println("you have to pass an array of color-arrays or one color as integer");
             }
+        }
+    }
+    else if (topicString.equals(TOPIC_SET_SWITCH)) 
+    {
+        this->led->enabled = message.equals("ON");
+
+        if (this->led->enabled) {
+            this->client.publish(TOPIC_GET_SWITCH, "ON");
+        } else {
+            this->client.publish(TOPIC_GET_SWITCH, "OFF");
         }
     }
     else
@@ -337,8 +349,10 @@ void Mqtt::sendHADiscoveryMsg(DynamicJsonDocument doc, const char *type, const c
     String size = String(n);
 
     bool ok = this->client.setBufferSize(DISCOVERY_MESSAGE_MAX_SIZE);
-    this->client.publish(discoveryTopic.c_str(), buffer, n);
-    this->client.setBufferSize(MQTT_MAX_PACKET_SIZE);
+    if (ok) {
+        this->client.publish(discoveryTopic.c_str(), buffer, n);
+        this->client.setBufferSize(MQTT_MAX_PACKET_SIZE);
+    }
 }
 
 void Mqtt::loop()

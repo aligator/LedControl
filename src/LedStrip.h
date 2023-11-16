@@ -19,6 +19,8 @@ public:
     LedStrip();
 	virtual ~LedStrip();
 
+    bool enabled = false;
+
 	void setup(int fps);
 	void loop();
     void setLed(uint16_t num, RgbColor color);
@@ -31,12 +33,18 @@ public:
     void setColors(std::vector<uint16_t> colors);
     uint16_t getNextColor();
     uint16_t getCurrentColor();
+
 private:
     std::vector<uint16_t> colors;
     uint8_t currentColorNum = 0;
 
     unsigned long previousMillis = 0;
     int fps = -1;
+
+    /**
+     * Save if the "clear" needs to be executed.
+     */
+    bool enabledDirty = true;
 
     Module* activeModule;
     

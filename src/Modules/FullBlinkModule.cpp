@@ -5,9 +5,7 @@ FullBlinkModule::FullBlinkModule(LedStrip* led)
     :LedModule(led)
 {
     led->setColors(std::vector<uint16_t> {
-        led->matrix.Color(255, 0, 0),
-        led->matrix.Color(0, 255, 0),
-        led->matrix.Color(0, 0, 255)
+        led->matrix.Color(255, 0, 0)
     });
 }
 

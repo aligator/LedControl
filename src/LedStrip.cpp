@@ -10,9 +10,7 @@ uint16_t remap(uint16_t x, uint16_t y) {
 LedStrip::LedStrip() : matrix(NeoPixelBrightnessBusGfx<NeoGrbFeature, NeoEsp8266DmaWs2812xMethod>(MATRIX_WIDTH, MATRIX_HEIGHT, LED_STRIP_PIN))
 {
   this->setColors(std::vector<uint16_t>{
-    this->matrix.Color(255, 0, 0),
     this->matrix.Color(0, 255, 0),
-    this->matrix.Color(0, 0, 255)
   });
 }
 
@@ -69,7 +67,9 @@ boolean LedStrip::_shouldDo()
   if (fps != 0 && matrix.CanShow() && (fps <= -1 || currentMillis - previousMillis >= 1000 / (unsigned int)fps))
   {
     previousMillis = currentMillis;
-    return true;
+
+    // Only really do, if the led strip is enabled.
+    return this->enabled;
   }
 
   return false;
@@ -99,5 +99,13 @@ void LedStrip::loop()
 {
   if (_shouldDo()) {
     activeModule->loop();
+  }
+
+  if (!this->enabled && this->enabledDirty) {
+    this->matrix.clear();
+    this->matrix.Show();
+    this->enabledDirty = false;
+  } else if (this->enabled) {
+    this->enabledDirty = true;
   }
 }
