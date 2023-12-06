@@ -5,8 +5,9 @@
 #include "LedStrip.h"
 #include "LedModule.h"
 #include <vector>
+#include <ArduinoJson.h>
 
-#define TOPIC_SET_TEXT ""
+#define TOPIC_SET_TEXT "/set"
 #define TOPIC_ADD_TEXT "/add"
 
 class TextModule: public LedModule {
@@ -23,6 +24,7 @@ private:
     int x = MATRIX_WIDTH;
 
     virtual bool doProcessMqtt(String topic, String message) override;
+    virtual bool doNextDiscoveryMessage(uint8 i, const char* baseTopic, DynamicJsonDocument *doc, char type[], char objectName[]) override;
     virtual const char* doGetModuleTopic() override;
     virtual void doLoop() override;
     virtual void doSetup() override;

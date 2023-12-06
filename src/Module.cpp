@@ -5,6 +5,10 @@ Module::~Module()
 {
 }
 
+bool Module::nextDiscoveryMessage(uint8 i, const char* baseTopic, DynamicJsonDocument *doc, char type[], char objectName[]) {
+  return this->doNextDiscoveryMessage(i, baseTopic, doc, type, objectName);
+}
+
 bool Module::processMqtt(String topic, String message) {
   return this->doProcessMqtt(topic, message);
 }

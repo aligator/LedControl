@@ -2,7 +2,6 @@
 #include "Util.h"
 #include <functional>
 #include <ArduinoJson.h>
-#include <ArduinoJson.h>
 
 #define TOPIC_ALL MQTT_TOPIC "/#"
 #define TOPIC_SET_BRIGHTNESS MQTT_TOPIC "/set/brightness"
@@ -317,10 +316,31 @@ void Mqtt::_reconnect()
             doc["rgb_command_topic"] = TOPIC_SET_COLOR;
             doc["payload_on"] = "ON";
             doc["payload_off"] = "OFF";
-            doc["frc_upd"] = true;
+            doc["retain"] = true;
             doc["icon"] = "mdi:led-strip-variant";
             this->sendHADiscoveryMsg(doc, "light", "led_matrix");
             doc.clear();
+
+            // Send the discovery for the modules.
+            for (uint i = 0; i < this->modules.size(); i++)
+            {
+                int iteration = 0;
+                bool hasNext = true;
+                while (hasNext) {
+                    char type[30];
+                    type[0] = '\0';
+
+                    char objectName[30];
+                    hasNext = this->modules[i]->nextDiscoveryMessage(iteration, MQTT_TOPIC, &doc, type, objectName);
+
+                    if (type[0] != '\0') {
+                        this->sendHADiscoveryMsg(doc, type, objectName);
+                        doc.clear();
+                    }
+
+                    iteration++;
+                }
+            }
 
             Serial.println("DONE!");
 

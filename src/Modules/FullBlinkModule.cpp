@@ -11,6 +11,10 @@ FullBlinkModule::FullBlinkModule(LedStrip* led)
 
 FullBlinkModule::~FullBlinkModule() {}
 
+bool FullBlinkModule::doNextDiscoveryMessage(uint8 i, const char* baseTopic, DynamicJsonDocument *doc, char type[], char objectName[]) {
+    return false;
+}
+
 bool FullBlinkModule::doProcessMqtt(String topic, String message) {
     return false;
 }

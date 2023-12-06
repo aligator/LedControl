@@ -17,6 +17,24 @@ void TextModule::setText(std::vector<String> newTexts) {
     this->texts = newTexts;
 }
 
+bool TextModule::doNextDiscoveryMessage(uint8 i, const char* baseTopic, DynamicJsonDocument *doc, char type[], char objectName[]) {
+    strcpy(type, "text");
+    strcpy(objectName, "led_matrix");
+    strcat(objectName, "_text");
+
+    (*doc)["name"] = "LED Matrix Text";
+
+    char textTopic[128];
+    strcpy(textTopic, baseTopic);
+    strcat(textTopic, this->doGetModuleTopic());
+    strcat(textTopic, TOPIC_SET_TEXT);
+    (*doc)["command_topic"] = textTopic;
+
+    (*doc)["retain"] = true;
+    (*doc)["icon"] = "mdi:format-color-text";
+    return false;
+}
+
 bool TextModule::doProcessMqtt(String topic, String message) {
     if (topic.equals(TOPIC_SET_TEXT)) {
         this->setText(std::vector<String>{message});
