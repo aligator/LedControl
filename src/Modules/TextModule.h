@@ -6,9 +6,10 @@
 #include "LedModule.h"
 #include <vector>
 #include <ArduinoJson.h>
+#include <PubSubClient.h>
 
-#define TOPIC_SET_TEXT "/set"
-#define TOPIC_ADD_TEXT "/add"
+#define TOPIC_SCROLL "/scroll"
+#define TOPIC_TEXT "/text"
 
 class TextModule: public LedModule {
 public:
@@ -18,6 +19,7 @@ public:
     void addText(String text);
     void setText(std::vector<String> texts);
 private:
+    bool scroll = true;
     std::vector<String> texts;
     uint8_t currentTextNum = 0;
 

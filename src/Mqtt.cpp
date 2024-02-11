@@ -45,7 +45,7 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
             if (brightness >= 0 && brightness <= 255)
             {
                 led->setBrightness(brightness);
-                this->client.publish(TOPIC_GET_BRIGHTNESS, message.c_str());
+                this->client.publish(TOPIC_GET_BRIGHTNESS, message.c_str(), true);
             }
             else
             {
@@ -205,13 +205,9 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
 
             // TODO: There is a bug in the util split, as it cannot read the 'last' part
             message.concat(",0");
-            this->client.publish("debug/all", message.c_str());
             String r = Util::split(message, ',', 0);
-            this->client.publish("debug/r", r.c_str());
             String g = Util::split(message, ',', 1);
-            this->client.publish("debug/g", g.c_str());
             String b = Util::split(message, ',', 2);
-            this->client.publish("debug/b", b.c_str());
 
             if (Util::isValidNumber(r) && Util::isValidNumber(g) && Util::isValidNumber(b))
             {

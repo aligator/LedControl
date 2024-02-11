@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <PubSubClient.h>
 
 /**
  * Module is the subclass for all modules.

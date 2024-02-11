@@ -1,5 +1,6 @@
 #include "Module.h"
 #include <Arduino.h>
+#include <PubSubClient.h>
 
 Module::~Module()
 {

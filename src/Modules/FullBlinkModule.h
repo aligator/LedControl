@@ -5,6 +5,7 @@
 #include "LedStrip.h"
 #include "LedModule.h"
 #include <ArduinoJson.h>
+#include <PubSubClient.h>
 
 class FullBlinkModule: public LedModule {
 public:
