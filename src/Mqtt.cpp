@@ -126,7 +126,23 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
         }
         else
         {
-            Serial.println("you have to pass an array of color-arrays or one color as integer");
+            // "rrr,ggg,bbb"
+            // e.g. 0,100,255
+
+            // TODO: There is a bug in the util split, as it cannot read the 'last' part
+            message.concat(",0");
+            String r = Util::split(message, ',', 0);
+            String g = Util::split(message, ',', 1);
+            String b = Util::split(message, ',', 2);
+
+            if (Util::isValidNumber(r) && Util::isValidNumber(g) && Util::isValidNumber(b))
+            {
+                led->addColor(led->matrix.Color(r.toInt(), g.toInt(), b.toInt()));
+            }
+            else
+            {
+                Serial.println("you have to pass an array of color-arrays or one color as integer");
+            }
         }
 
         return;
@@ -304,6 +320,7 @@ void Mqtt::_reconnect()
 
             Serial.println("Sending HA discovery.");
             DynamicJsonDocument doc(DISCOVERY_MESSAGE_MAX_SIZE);
+
             doc["name"] = "LED Matrix Light";
             doc["stat_t"] = TOPIC_GET_SWITCH;
             doc["command_topic"] = TOPIC_SET_SWITCH;
@@ -316,6 +333,13 @@ void Mqtt::_reconnect()
             doc["icon"] = "mdi:led-strip-variant";
             this->sendHADiscoveryMsg(doc, "light", "led_matrix");
             doc.clear();
+
+            doc["name"] = "LED Matrix Add Color";
+            doc["command_topic"] = TOPIC_ADD_COLOR;
+            doc["icon"] = "mdi:led-strip-variant";
+            this->sendHADiscoveryMsg(doc, "text", "led_matrix_add_color");
+            doc.clear();
+
 
             // Send the discovery for the modules.
             for (uint i = 0; i < this->modules.size(); i++)

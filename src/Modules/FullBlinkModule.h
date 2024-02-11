@@ -7,12 +7,15 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 
+#define TOPIC_BLINK_ENABLED "/enabled"
+
 class FullBlinkModule: public LedModule {
 public:
     FullBlinkModule(LedStrip* led);
     virtual ~FullBlinkModule();
     
 private:
+    bool enabled = false;
     bool currentlyOn = false;
 
     virtual bool doProcessMqtt(String topic, String message) override;
