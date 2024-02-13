@@ -355,6 +355,14 @@ void Mqtt::_reconnect()
             this->sendHADiscoveryMsg(doc, "number", "led_matrix_set_fps");
             doc.clear();
 
+            doc["name"] = "LED Matrix Set Brightness";
+            doc["command_topic"] = TOPIC_SET_BRIGHTNESS;
+            doc["icon"] = "mdi:led-strip-variant";
+            doc["min"] = 0;
+            doc["max"] = 255;
+            this->sendHADiscoveryMsg(doc, "number", "led_matrix_set_brightness");
+            doc.clear();
+
 
             // Send the discovery for the modules.
             for (uint i = 0; i < this->modules.size(); i++)
