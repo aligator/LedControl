@@ -5,7 +5,8 @@
 
 class Util {
 public:
-    static boolean isValidNumber(String str);
+    static boolean isValidFloat(String str);
+    static boolean isValidInt(String str);
     static String split(String s, char parser, int index);
 };
 #endif /* UTIL_H_ */

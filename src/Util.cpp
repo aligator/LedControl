@@ -1,9 +1,29 @@
 #include "Util.h"
 
-boolean Util::isValidNumber(String str) {
+boolean Util::isValidInt(String str) {
     boolean isNum=false;
     for(byte i=0; i<str.length(); i++)
     {
+        isNum = isDigit(str.charAt(i)) || str.charAt(i) == '+' || str.charAt(i) == '.' || str.charAt(i) == '-';
+        if(!isNum) {
+            return false;
+        }
+    }
+    return isNum;
+}
+
+boolean Util::isValidFloat(String str) {
+    boolean isNum=false;
+    bool foundDot = false;
+    for(byte i=0; i<str.length(); i++)
+    {
+        if(str.charAt(i) == '.') {
+            if(foundDot) {
+                return false;
+            }
+            foundDot = true;
+            continue;
+        }
         isNum = isDigit(str.charAt(i)) || str.charAt(i) == '+' || str.charAt(i) == '.' || str.charAt(i) == '-';
         if(!isNum) {
             return false;

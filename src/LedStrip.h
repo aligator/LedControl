@@ -21,12 +21,12 @@ public:
 
     bool enabled = false;
 
-	void setup(int fps);
+	void setup(float fps);
 	void loop();
     void setLed(uint16_t num, RgbColor color);
     void setLed(uint16_t x, uint16_t y, RgbColor color);
     void setBrightness(uint8_t brightness);
-    void setFps(int fps);
+    void setFps(float fps);
     void loadModule(Module* module);
 
     void addColor(uint16_t color);
@@ -39,7 +39,7 @@ private:
     uint8_t currentColorNum = 0;
 
     unsigned long previousMillis = 0;
-    int fps = -1;
+    float fps = -1;
 
     /**
      * Save if the "clear" needs to be executed.

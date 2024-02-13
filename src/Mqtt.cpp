@@ -39,7 +39,7 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
     // first check global settings
     if (topicString.equals(TOPIC_SET_BRIGHTNESS))
     {
-        if (Util::isValidNumber(message))
+        if (Util::isValidInt(message))
         {
             int brightness = message.toInt();
             if (brightness >= 0 && brightness <= 255)
@@ -57,10 +57,10 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
     else if (topicString.equals(TOPIC_SET_FPS))
     {
         // -1 is fps disabled -> as fast as it can
-        if (Util::isValidNumber(message))
+        if (Util::isValidFloat(message))
         {
-            int fps = message.toInt();
-            if (fps >= -1 && fps <= 500)
+            float fps = message.toFloat();
+            if (fps > 0.0 && fps <= 500.0)
             {
                 led->setFps(fps);
             }
@@ -74,7 +74,7 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
     else if (topicString.equals(TOPIC_ADD_COLOR))
     {
         // numeric value
-        if (Util::isValidNumber(message))
+        if (Util::isValidInt(message))
         {
             int color = message.toInt();
             if (color >= 0 && color <= 0xFFFFFF)
@@ -135,7 +135,7 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
             String g = Util::split(message, ',', 1);
             String b = Util::split(message, ',', 2);
 
-            if (Util::isValidNumber(r) && Util::isValidNumber(g) && Util::isValidNumber(b))
+            if (Util::isValidInt(r) && Util::isValidInt(g) && Util::isValidInt(b))
             {
                 led->addColor(led->matrix.Color(r.toInt(), g.toInt(), b.toInt()));
             }
@@ -151,7 +151,7 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
     {
         // e.g. only one color using th numeric value or "[[255,0,0],[0,0,255]]"
 
-        if (Util::isValidNumber(message))
+        if (Util::isValidInt(message))
         {
             int color = message.toInt();
             if (color >= 0 && color <= 0xFFFFFF)
@@ -225,7 +225,7 @@ void Mqtt::_receiveCallback(char *topic, byte *payload, unsigned int length)
             String g = Util::split(message, ',', 1);
             String b = Util::split(message, ',', 2);
 
-            if (Util::isValidNumber(r) && Util::isValidNumber(g) && Util::isValidNumber(b))
+            if (Util::isValidInt(r) && Util::isValidInt(g) && Util::isValidInt(b))
             {
                 colors.push_back(led->matrix.Color(
                     r.toInt(),
@@ -338,6 +338,21 @@ void Mqtt::_reconnect()
             doc["command_topic"] = TOPIC_ADD_COLOR;
             doc["icon"] = "mdi:led-strip-variant";
             this->sendHADiscoveryMsg(doc, "text", "led_matrix_add_color");
+            doc.clear();
+
+            doc["name"] = "LED Matrix Set Color";
+            doc["command_topic"] = TOPIC_SET_COLOR;
+            doc["icon"] = "mdi:led-strip-variant";
+            this->sendHADiscoveryMsg(doc, "text", "led_matrix_set_color");
+            doc.clear();
+
+            doc["name"] = "LED Matrix Set FPS";
+            doc["command_topic"] = TOPIC_SET_FPS;
+            doc["icon"] = "mdi:led-strip-variant";
+            doc["min"] = -1.0;
+            doc["max"] = 500.0;
+            doc["step"] = 0.1;
+            this->sendHADiscoveryMsg(doc, "number", "led_matrix_set_fps");
             doc.clear();
 
 

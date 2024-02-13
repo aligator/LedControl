@@ -24,7 +24,7 @@ void LedStrip::loadModule(Module* module) {
   activeModule->setup();
 }
 
-void LedStrip::setup(int fps)
+void LedStrip::setup(float fps)
 {
   this->fps = fps;
   matrix.Begin();
@@ -64,7 +64,7 @@ uint16_t LedStrip::getCurrentColor() {
 boolean LedStrip::_shouldDo()
 {
   unsigned long currentMillis = millis();
-  if (fps != 0 && matrix.CanShow() && (fps <= -1 || currentMillis - previousMillis >= 1000 / (unsigned int)fps))
+  if (fps != 0.0 && matrix.CanShow() && (fps < 0 || currentMillis - previousMillis >= 1000.0 / fps))
   {
     previousMillis = currentMillis;
 
@@ -91,7 +91,7 @@ void LedStrip::setBrightness(uint8_t brightness)
   matrix.SetBrightness(scaledBrightness);
 }
 
-void LedStrip::setFps(int fps) {
+void LedStrip::setFps(float fps) {
   this->fps = fps;
 }
 
